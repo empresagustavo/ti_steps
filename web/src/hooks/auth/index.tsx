@@ -1,5 +1,5 @@
 import { RouterPathType } from "@/views/configs/router-path-type";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -15,6 +15,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     const navigate = useNavigate();
     const [isAutenticated, setIsAutenticated] = useState<boolean>(false);
+
+
+    useEffect(() => {
+        if(!isAutenticated) {
+
+            navigate({ pathname: RouterPathType.LOGIN.path });
+        }
+    },[isAutenticated]);
 
 
     const login = (token: string) => {
