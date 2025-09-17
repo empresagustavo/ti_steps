@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import authImg from "@/assets/12085707_20944201.jpg"
 import createImg from "@/assets/11668754_20945760.jpg";
-import { useAuth } from "@/hooks/auth"
+import { useAuth } from "@/hooks/auth/use-auth"
 import { useState } from "react"
 import React from "react"
-
+import { useLogin } from "@/hooks/auth/use-login"
+import { toast } from "sonner";
 
 
 export function LoginForm({
@@ -21,15 +22,26 @@ export function LoginForm({
   const [password, setPassword] = useState<string>('');
   const [isCreate, setIsCreate] = useState<boolean>(false);
 
+  const { mutate: loginAuth } = useLogin(
+  (data) => {
+    //toast.success(`Bem-vindo Admin ${data.data.user.email}`);
+    console.log(data)
+    login(data);
+  },
+  (error) => {
+    toast.error(error.response?.data?.message?.message || `Erro ao logar Empresa.`, {
+      className: "text-red-500 font-semibold"
+    });
+  },);
+
 
   function handleLogin(e: React.FormEvent) {
 
     e.preventDefault();
 
-    // Chama rotina para Autenticar Usuário.
-    // Retorna TOKEN
+    loginAuth({email: username, password});
 
-    login(`TOKEN`);
+    //login(`TOKEN`);
   };
 
   function handleRegister(e: React.FormEvent){
@@ -39,7 +51,7 @@ export function LoginForm({
     // Chama rotina para cadastar Usuário.
     // Retorna TOKEN
 
-    login(`TOKEN`);
+    loginAuth({email: username, password});
   }
 
 

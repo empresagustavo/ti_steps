@@ -1,0 +1,82 @@
+{
+    "user": {
+        "token": "123",
+        "name": "Gustavo G. e S.",
+        "email": "m@example.com",
+        "avatar": "/avatars/shadcn.jpg",
+        "navMain": [
+            {
+                "title": "Lanches",
+                "url": "#",
+                "items": [
+                    {
+                        "title": "Histórico de Lanches",
+                        "url": "#"
+                    },
+                    {
+                        "title": "Lançar lanche",
+                        "url": "#"
+                    }
+                ]
+            },
+            {
+                "title": "Gatilhos",
+                "url": "#",
+                "items": [
+                    {
+                        "title": "Ranking de Gatilhos",
+                        "url": "/trigger/ranking"
+                    },
+                    {
+                        "title": "Lançar Gatilho",
+                        "url": "#"
+                    }
+                ]
+            },
+            {
+                "title": "Aniversários",
+                "url": "#",
+                "items": [
+                    {
+                        "title": "Comemorações",
+                        "url": "#"
+                    },
+                    {
+                        "title": "Lançar Aniversário",
+                        "url": "#"
+                    }
+                ]
+            },
+            {
+                "title": "Piadas (sem graça são as melhores)",
+                "url": "#",
+                "items": [
+                    {
+                        "title": "Listagem",
+                        "url": "#"
+                    },
+                    {
+                        "title": "Lançar Piada",
+                        "url": "#"
+                    }
+                ]
+            },
+            {
+                "title": "Lembranças",
+                "url": "#",
+                "items": [
+                    {
+                        "title": "Album",
+                        "url": "#"
+                    },
+                    {
+                        "title": "Lançar Lembrança",
+                        "url": "#"
+                    }
+                ]
+            }
+        ]
+    }
+    
+    
+}
