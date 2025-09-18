@@ -26,6 +26,8 @@ const create = async (model: UserModel) => {
 
 const update = async (id: string, model: UserModel): Promise<UserModel> => {
     
+    if(!await userRepository.findById(id)) throw new Error("Nenhum recurso encontrado.");
+    
     let user = await userRepository.update(id, toEntity(model, false) as unknown as Prisma.UserUpdateInput);
 
     return toModel(user);
