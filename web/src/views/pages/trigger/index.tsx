@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, type JSX, type ForwardRefExoticComponent, type RefAttributes } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { ThumbsUp, ThumbsDown, Clock } from "lucide-react"
+import { ThumbsUp, ThumbsDown, Clock, Trophy, type LucideProps, Medal, Award, Bookmark } from "lucide-react"
+import { Label } from "@/components/ui/label"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 type Trigger = {
   id: number
@@ -20,6 +22,7 @@ type UserRanking = {
   id: number
   name: string
   triggersCount: number
+  icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>
 }
 
 export default function TriggerPage() {
@@ -54,10 +57,17 @@ export default function TriggerPage() {
   ])
 
   const [ranking] = useState<UserRanking[]>([
-    { id: 1, name: "Ana", triggersCount: 5 },
-    { id: 2, name: "Pedro", triggersCount: 4 },
-    { id: 3, name: "Marina", triggersCount: 3 },
-    { id: 4, name: "Carlos", triggersCount: 2 },
+    { id: 1, name: "Ana", triggersCount: 5, icon: Trophy },
+    { id: 2, name: "Pedro", triggersCount: 4, icon: Medal },
+    { id: 3, name: "Marina", triggersCount: 3, icon: Award },
+    { id: 4, name: "Carlos", triggersCount: 2, icon: Bookmark },
+  ]);
+
+  const [rankingToday] = useState<UserRanking[]>([
+    { id: 1, name: "Ana", triggersCount: 2, icon: Trophy },
+    { id: 2, name: "Pedro", triggersCount: 1, icon: Medal },
+    { id: 3, name: "Marina", triggersCount: 1, icon: Award },
+    { id: 4, name: "Carlos", triggersCount: 1, icon: Bookmark},
   ])
 
   // Contagem regressiva do cooldown
@@ -105,8 +115,9 @@ export default function TriggerPage() {
         <CardContent className="space-y-4">
           {triggers.map((trigger) => (
             <div
+              
               key={trigger.id}
-              className="border rounded-xl p-4 flex flex-col gap-2 shadow-sm"
+              className={`border rounded-xl p-4 flex flex-col gap-2 shadow-sm ${trigger.isOpen ?'' : 'bg-gray-100'}`}
             >
               <p className="font-medium">“{trigger.phrase}”</p>
               <div className="flex items-center justify-between text-sm text-muted-foreground">
@@ -150,28 +161,66 @@ export default function TriggerPage() {
       {/* Card de Ranking */}
       <Card className="col-span-1">
         <CardHeader>
-          <CardTitle>Ranking da Semana</CardTitle>
+          <CardTitle>Rankings</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {ranking.map((user, index) => (
-            <div
-              key={user.id}
-              className="flex items-center justify-between p-2 rounded-lg border"
-            >
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarFallback>{user.name[0]}</AvatarFallback>
-                </Avatar>
-                <span className="font-medium">{user.name}</span>
+
+          <div className="flex flex-col gap-4">
+            <Label>De hoje</Label>
+
+            {rankingToday.map((user, index) => (
+              <div
+                key={user.id}
+                className="flex items-center justify-between p-2 rounded-lg border"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold">#{index + 1}</span>
+                  <div className="flex items-center gap-3">
+                    {<user.icon className={
+                      user.icon.displayName === 'Trophy' ? 'text-yellow-400' : 
+                      user.icon.displayName === 'Medal' ? 'text-slate-400' : 
+                      user.icon.displayName === 'Award' ? 'text-red-400' : 
+                      user.icon.displayName === 'Bookmark' ? 'text-indigo-400' : ''}/> }
+                  </div>
+                  <span className="text-sm text-muted-foreground">
+                    {user.triggersCount} gatilhos
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="font-medium">{user.name}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">
-                  {user.triggersCount} gatilhos
-                </span>
-                <span className="text-lg font-bold">#{index + 1}</span>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <Label>Da semana</Label>
+
+            {ranking.map((user, index) => (
+              <div
+                key={user.id}
+                className="flex items-center justify-between p-2 rounded-lg border"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold">#{index + 1}</span>
+                  <div className="flex items-center gap-3">
+                    {<user.icon className={
+                      user.icon.displayName === 'Trophy' ? 'text-yellow-400' : 
+                      user.icon.displayName === 'Medal' ? 'text-slate-400' : 
+                      user.icon.displayName === 'Award' ? 'text-red-400' : 
+                      user.icon.displayName === 'Bookmark' ? 'text-indigo-400' : ''}/> }
+                  </div>
+                  <span className="text-sm text-muted-foreground">
+                    {user.triggersCount} gatilhos
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="font-medium">{user.name}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          
         </CardContent>
       </Card>
     </div>

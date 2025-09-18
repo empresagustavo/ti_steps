@@ -55,34 +55,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [isAutenticated]);
 
 
-
     const login = (userData: UserAuthModel) => {
         if(!userData?.token){
-            //navigate({ pathname: RouterPathType.LOGIN.path });
             setIsAutenticated(false);
-            console.log("Não logou!", userData)
             return;
         }
 
         setCacheUser(userData);
         setUserData(userData)
 
-        console.log("Logou!", userData)
-
-        navigate({ pathname: RouterPathType.DASHBOARD.path });
+        navigate({ pathname: RouterPathType.MAIN_LAYOUT.path });
         setIsAutenticated(true);
     };
-
-
     const logout = () => {
         removeCacheUser();
         setIsAutenticated(false);
         setUserData(undefined);
         navigate({ pathname: RouterPathType.LOGIN.path });
     };
-
-
-    
 
 
     const value: AuthContextValue = {

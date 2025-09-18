@@ -25,7 +25,6 @@ export function LoginForm({
   const { mutate: loginAuth } = useLogin(
   (data) => {
     //toast.success(`Bem-vindo Admin ${data.data.user.email}`);
-    console.log(data)
     login(data);
   },
   (error) => {

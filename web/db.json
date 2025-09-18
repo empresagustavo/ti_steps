@@ -29,7 +29,7 @@
                     },
                     {
                         "title": "Lançar Gatilho",
-                        "url": "#"
+                        "url": "/trigger/register"
                     }
                 ]
             },
@@ -48,7 +48,7 @@
                 ]
             },
             {
-                "title": "Piadas (sem graça são as melhores)",
+                "title": "Piadas",
                 "url": "#",
                 "items": [
                     {
@@ -74,6 +74,59 @@
                         "url": "#"
                     }
                 ]
+            }
+        ]
+    },
+    "triggers": {
+        "triggersToday": [
+            {
+                "id": 1,
+                "phrase": "Nem todo mundo nasceu pra isso né...",
+                "points": 12,
+                "isOpen": true,
+                "timeLeft": 3600,
+                "author": "Ana",
+                "proposer": "Carlos"
+            },
+            {
+                "id": 2,
+                "phrase": "Tem gente que só fala, mas não faz...",
+                "points": -3,
+                "isOpen": true,
+                "timeLeft": 1800,
+                "author": "Pedro",
+                "proposer": "João"
+            },
+            {
+                "id": 3,
+                "phrase": "Ah, mas fulano faria melhor...",
+                "points": 8,
+                "isOpen": false,
+                "timeLeft": 0,
+                "author": "Marina",
+                "proposer": "Lucas"
+            }
+        ],
+        "usersRanking": [
+            { 
+                "id": 1,
+                "name": "Ana", 
+                "triggersCount": 5 
+            },
+            { 
+                "id": 2, 
+                "name": "Pedro", 
+                "triggersCount": 4 
+            },
+            { 
+                "id": 3, 
+                "name": "Marina", 
+                "triggersCount": 3 
+            },
+            { 
+                "id": 4, 
+                "name": "Carlos", 
+                "triggersCount": 2 
             }
         ]
     }
