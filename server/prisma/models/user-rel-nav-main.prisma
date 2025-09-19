@@ -1,13 +1,12 @@
-model User {
+model UserRelNavMain {
     id                      String          @id                 @default(uuid())
     createdAt               DateTime                            @default(now())
     updatedAt               DateTime                            @updatedAt
     active                  Boolean                             @default(true)
 
-    name                    String
-    email                   String          @unique
-    password                String
-    isAdmin                 Boolean                             @default(false)
+    userId                  String
+    navMainId               String
 
-    userRelNavMain          UserRelNavMain[]
+    navMain                 NavMain                             @relation(references: [id], fields: [navMainId])
+    user                    User                                @relation(references: [id], fields: [userId])
 }

@@ -22,20 +22,20 @@ export function MainLayout() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-[#4f52ff]">
-          <SidebarTrigger className="-ml-1 text-white" />
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-gray-200">
+          <SidebarTrigger className="-ml-1 text-blue-700" />
           <Separator
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"
           />
           <Breadcrumb>
             <BreadcrumbList>
-              <BreadcrumbItem className="hidden text-white md:block hover:underline">
+              <BreadcrumbItem className="hidden text-gray-700 md:block hover:underline">
                 <BreadcrumbLink href="#">
                   Building Your Application
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden text-white md:block" />
+              <BreadcrumbSeparator className="hidden text-gray-700 md:block" />
               <BreadcrumbItem>
                 <BreadcrumbPage>Data Fetching</BreadcrumbPage>
               </BreadcrumbItem>

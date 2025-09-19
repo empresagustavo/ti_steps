@@ -1,24 +1,40 @@
 import { Prisma, User } from "@prisma/client";
 import { UserModel } from "../models/user.model";
-import userRepository from "../repositories/user.repository";
+import userRepository, { UserWithNavMains } from "../repositories/user.repository";
+import { hashPassword } from "../utils/crypt.util";
+import { BadRequestError, NotFoundError } from "../errors/http.error";
+import { randomUUID } from "crypto";
+
+
+const getByEmail = async (email: string): Promise<UserModel> => {
+
+    let user = await userRepository.findByEmail(email);
+    if(!user) throw new NotFoundError("Nenhum recurso encontrado.");
+
+    return toModelWithNavMains(user);
+};
 
 const getAll = async (): Promise<UserModel[]> => {
 
     let all = await userRepository.findAll();
 
-    return all.map(user => { return toModel(user); });
+    return all.map(user => { return toModelWithNavMains(user); });
 };
 
 const getById = async (id: string): Promise<UserModel> => {
 
     let user = await userRepository.findById(id);
-    if(!user) throw new Error("Nenhum recurso encontrado.");
+    if(!user) throw new NotFoundError("Nenhum recurso encontrado.");
 
     return toModel(user);;
 };
 
 const create = async (model: UserModel) => {
     
+    if(!model.password || !model.email) throw new Error("Um ou mais parâmetros inválidos.");
+
+    model.password = await hashPassword(model.password);
+
     let user = await userRepository.create(toEntity(model, true) as unknown as Prisma.UserCreateInput);
 
     return toModel(user);
@@ -26,7 +42,11 @@ const create = async (model: UserModel) => {
 
 const update = async (id: string, model: UserModel): Promise<UserModel> => {
     
-    if(!await userRepository.findById(id)) throw new Error("Nenhum recurso encontrado.");
+    if(!await userRepository.findById(id)) throw new NotFoundError("Nenhum recurso encontrado.");
+
+    if(!model.password || !model.email) throw new BadRequestError("Um ou mais parâmetros inválidos.");
+
+    model.password = await hashPassword(model.password);
     
     let user = await userRepository.update(id, toEntity(model, false) as unknown as Prisma.UserUpdateInput);
 
@@ -35,7 +55,7 @@ const update = async (id: string, model: UserModel): Promise<UserModel> => {
 
 const remove = async (id: string): Promise<boolean> => {
 
-    if(!await userRepository.findById(id)) throw new Error("Nenhum recurso encontrado.");
+    if(!await userRepository.findById(id)) throw new NotFoundError("Nenhum recurso encontrado.");
 
     let user = await userRepository.remove(id);
     return user === undefined;
@@ -45,11 +65,36 @@ const toModel = (entity: User): UserModel => {
     
     return {
         email: entity.email,
+        token: randomUUID(),
         name: entity.name,
+        isAdmin: entity.isAdmin,
         active: entity.active,
         createdAt: entity.createdAt,
         id: entity.id,
         updatedAt: entity.updatedAt,
+    };
+};
+
+const toModelWithNavMains = (entity: UserWithNavMains): UserModel => {
+    
+    return {
+        id: entity.id,
+        name: entity.name,
+        email: entity.email,
+        password: entity.password,
+        isAdmin: entity.isAdmin,
+        active: entity.active,
+        createdAt: entity.createdAt,
+        updatedAt: entity.updatedAt,
+        navMain: entity.userRelNavMain.map(rel => ({
+            id: rel.navMain.id,
+            title: rel.navMain.title,
+            url: rel.navMain.url,
+            active: rel.navMain.active,
+            items: rel.navMain.children,
+            createdAt: rel.createdAt,
+            updatedAt: rel.updatedAt,
+        }))
     };
 };
 
@@ -77,6 +122,7 @@ const toEntity = (model: UserModel, isCreate: boolean): Prisma.UserCreateInput |
 
 
 export default { 
+    getByEmail,
     getAll, 
     getById, 
     create,

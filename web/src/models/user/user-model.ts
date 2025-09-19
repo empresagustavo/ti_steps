@@ -9,6 +9,7 @@ export type UserModel = Omit<
 export type UserAuthModel = {
     token: string;
     name: string;
+    isAdmin: boolean;
     email: string;
     avatar: string;
     navMain?: NavMainType[];

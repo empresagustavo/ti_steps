@@ -1,13 +1,15 @@
-import { Router } from "express";
-import userController from "../controllers/user.controller";
+import authRoute from "./maps/authMap.router";
+import navMainRoute from "./maps/navMainMap.router";
+import userRoute from "./maps/userMap.router";
 
-const router = Router();
 
-// Rotas de Usuário
-router.get("/users", userController.getAll);
-router.get("/users/:id", userController.getById);
-router.post("/users", userController.create);
-router.put("/users/:id", userController.update);
-router.delete("/users/:id", userController.remove);
 
-export default router;
+// Rotas
+const routes = [
+    authRoute,
+    userRoute,
+    navMainRoute
+];
+
+
+export default routes;

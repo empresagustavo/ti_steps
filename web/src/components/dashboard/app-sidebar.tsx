@@ -20,6 +20,7 @@ import { useEffect, useState } from "react"
 import type { UserModel } from "@/models/user/user-model"
 import type { NavMainType } from "@/models/user/nav-main-model"
 import { useAuth } from "@/hooks/auth/use-auth"
+import { Link } from "react-router-dom"
 
 
 
@@ -62,14 +63,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar {...props} >
-      <SidebarHeader>
+      <SidebarHeader className="bg-gray-100">
         <VersionSwitcher
           //versions={undefined}
           //defaultVersion={userData.versions[0]}
         />
         <SearchForm />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-gray-100">
         {/* We create a SidebarGroup for each parent. */}
         {userDataCache?.navMain?.map((item) => (
           <SidebarGroup key={item.title}>
@@ -78,8 +79,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenu>
                 {item?.items?.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive} onClick={() => handleSetActiveMenuItem(item)}>
-                      <a href={item.url}>{item.title}</a>
+                    <SidebarMenuButton asChild isActive={item.isActive} onClick={() => handleSetActiveMenuItem(item)} className={ item.isActive ? "border-b-1 border-blue-400 rounded-none" : ""}>
+                      <Link to={item.url}>{item.title}</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}

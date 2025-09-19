@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 type AuthContextValue = {
     isAutenticated: boolean;
+    isAdmin: boolean;
     login: (userData: UserAuthModel) => void;
     logout: () => void;
     userData?: UserModel;
@@ -40,6 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const navigate = useNavigate();
     const [isAutenticated, setIsAutenticated] = useState<boolean>(false);
+    const [isAdmin, setIsAdmin] = useState<boolean>(getCacheUser()?.isAdmin ?? false);
     const [userData, setUserData] = useState<UserModel | undefined>(getCacheUser());
 
     useEffect(() => {
@@ -66,10 +68,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         navigate({ pathname: RouterPathType.MAIN_LAYOUT.path });
         setIsAutenticated(true);
+        console.log(userData.isAdmin)
+        setIsAdmin(userData.isAdmin);
     };
     const logout = () => {
         removeCacheUser();
         setIsAutenticated(false);
+        setIsAdmin(false);
         setUserData(undefined);
         navigate({ pathname: RouterPathType.LOGIN.path });
     };
@@ -77,6 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const value: AuthContextValue = {
         isAutenticated,
+        isAdmin,
         login,
         logout,
         userData,

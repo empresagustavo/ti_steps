@@ -8,7 +8,7 @@ import createImg from "@/assets/11668754_20945760.jpg";
 import { useAuth } from "@/hooks/auth/use-auth"
 import { useState } from "react"
 import React from "react"
-import { useLogin } from "@/hooks/auth/use-login"
+import { useCreate, useLogin } from "@/hooks/auth/use-login"
 import { toast } from "sonner";
 
 
@@ -24,11 +24,24 @@ export function LoginForm({
 
   const { mutate: loginAuth } = useLogin(
   (data) => {
-    //toast.success(`Bem-vindo Admin ${data.data.user.email}`);
+    toast.success(`Bem-vindo Admin ${data.name}`);
     login(data);
   },
   (error) => {
-    toast.error(error.response?.data?.message?.message || `Erro ao logar Empresa.`, {
+    console.log(error)
+    toast.error(error.response?.data?.message || `Erro ao logar.`, {
+      className: "text-red-500 font-semibold"
+    });
+  },);
+
+  const { mutate: newUser } = useCreate(
+  (data) => {
+    toast.success(`Bem-vindo Admin ${data.name}`);
+    login(data);
+  },
+  (error) => {
+    console.log(error)
+    toast.error(error.response?.data?.message || `Erro ao cadastrar.`, {
       className: "text-red-500 font-semibold"
     });
   },);
@@ -39,18 +52,14 @@ export function LoginForm({
     e.preventDefault();
 
     loginAuth({email: username, password});
-
-    //login(`TOKEN`);
   };
 
   function handleRegister(e: React.FormEvent){
     
     e.preventDefault();
+    console.log(isCreate)
 
-    // Chama rotina para cadastar Usuário.
-    // Retorna TOKEN
-
-    loginAuth({email: username, password});
+    newUser({email: username, password});
   }
 
 
@@ -133,7 +142,7 @@ export function LoginForm({
                     onChange={(e) => setPassword(e.target.value)}
                     required />
                 </div>
-                <Button type="submit" variant="ghost" className="w-full bg-[#4547E9] text-white" onClick={() =>setIsCreate(false)}>
+                <Button type="submit" variant="ghost" className="w-full bg-[#4547E9] text-white">
                   Registrar
                 </Button>
                 <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">

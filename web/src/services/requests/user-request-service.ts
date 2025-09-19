@@ -7,7 +7,20 @@ export async function login(data: { email: string, password: string }): Promise<
 
     const res = await httpClient({
         "Content-type": "application/json", 
-    }).get<UserAuthModel>("/user");//#OBS: Aqui é um GET somente por uso do JSON-Server. EM PRD é POST
+    }).post<UserAuthModel>("/auth", data);
 
+    console.log(res.data)
+    return res.data;
+}
+
+export async function create(data: { email: string, password: string }): Promise<UserAuthModel> {
+    
+    const newData = {email: data.email, password: data.password, name: data.email.split('@')[0] };
+
+    const res = await httpClient({
+        "Content-type": "application/json", 
+    }).post<UserAuthModel>("/users", newData);
+
+    console.log(res.data)
     return res.data;
 }

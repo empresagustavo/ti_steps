@@ -1,6 +1,9 @@
 export type NavMainModel = {
     title: string;
     url: string;
-    isActive: boolean;
+    active?: boolean;
     items?: NavMainModel[];
+    createdAt?: Date;
+    id?: string;
+    updatedAt?: Date;
 };

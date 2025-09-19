@@ -6,6 +6,7 @@ export type UserModel = {
     updatedAt?: Date;
     active?: boolean;
     token?: string;
+    isAdmin?: boolean;
     password?: string;
     name: string;
     email: string;

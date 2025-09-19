@@ -2,6 +2,10 @@ import { Request, Response } from "express";
 import userService from "../services/user.service";
 import { UserModel } from "../models/user.model";
 
+
+
+
+
 const getAll = async (req: Request, res: Response) => {
 
   const users = await userService.getAll();
@@ -14,7 +18,6 @@ const getById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const user = await userService.getById(id);
-  if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
   
   res.json(user);
 };
@@ -43,16 +46,15 @@ const remove = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const user = await userService.remove(id);
-  if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
   
   res.json(user);
 };
 
 
 export default { 
-    getAll, 
-    getById, 
-    create, 
-    update,
-    remove
+  getAll, 
+  getById, 
+  create, 
+  update,
+  remove
 };

@@ -1,13 +1,16 @@
-model User {
+model NavMain {
     id                      String          @id                 @default(uuid())
     createdAt               DateTime                            @default(now())
     updatedAt               DateTime                            @updatedAt
     active                  Boolean                             @default(true)
 
-    name                    String
-    email                   String          @unique
-    password                String
-    isAdmin                 Boolean                             @default(false)
+    title                   String
+    url                     String
+
+    parentId                String?
+
+    parent                  NavMain?                            @relation("NavHierarchy", references: [id], fields: [parentId])
+    children                NavMain[]                           @relation("NavHierarchy")
 
     userRelNavMain          UserRelNavMain[]
 }
