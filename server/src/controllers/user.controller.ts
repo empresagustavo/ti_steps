@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import userService from "../services/user.service";
 import { UserModel } from "../models/user.model";
+import { UserRelNavMainModel } from "../models/userRelNavMain.model";
 
 
 
@@ -50,11 +51,31 @@ const remove = async (req: Request, res: Response) => {
   res.json(user);
 };
 
+const createNavMainAccess = async (req: Request, res: Response) => {
+
+  const { userId, navMainId } = req.body as UserRelNavMainModel;
+
+  const userNav = await userService.createNavMainAccess(userId, navMainId);
+
+  res.json(userNav);
+}
+
+const removeNavMainAccess = async (req: Request, res: Response) => {
+
+  const { userId, navId } = req.params;
+
+  const userNav = await userService.removeNavMainAccess(userId, navId);
+
+  res.json(userNav);
+}
+
 
 export default { 
   getAll, 
   getById, 
   create, 
   update,
-  remove
+  remove,
+  createNavMainAccess,
+  removeNavMainAccess,
 };

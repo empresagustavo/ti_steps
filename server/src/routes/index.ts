@@ -1,5 +1,6 @@
 import authRoute from "./maps/authMap.router";
 import navMainRoute from "./maps/navMainMap.router";
+import triggerRoute from "./maps/trigger.router";
 import userRoute from "./maps/userMap.router";
 
 
@@ -8,7 +9,8 @@ import userRoute from "./maps/userMap.router";
 const routes = [
     authRoute,
     userRoute,
-    navMainRoute
+    navMainRoute,
+    triggerRoute,
 ];
 
 

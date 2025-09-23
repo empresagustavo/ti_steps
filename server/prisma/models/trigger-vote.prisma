@@ -1,0 +1,16 @@
+model TriggerVote {
+    id                            String      @id               @default(uuid())
+    createdAt                     DateTime                      @default(now())
+    updatedAt                     DateTime                      @updatedAt
+    active                        Boolean                       @default(true)
+
+    triggerId                     String
+    userId                        String
+
+    vote                          Boolean
+
+    trigger                       Trigger                       @relation(fields: [triggerId], references: [id])
+    user                          User                          @relation(fields: [userId], references: [id])
+
+  @@unique([triggerId, userId]) // impede que um usuário vote mais de uma vez no mesmo trigger
+}

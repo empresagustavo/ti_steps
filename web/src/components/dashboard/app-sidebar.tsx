@@ -13,14 +13,13 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { SearchForm } from "./search-form"
 import { VersionSwitcher } from "./version-swtcher"
 import { NavUser } from "./nav-user"
 import { useEffect, useState } from "react"
 import type { UserModel } from "@/models/user/user-model"
-import type { NavMainType } from "@/models/user/nav-main-model"
 import { useAuth } from "@/hooks/auth/use-auth"
 import { Link } from "react-router-dom"
+import type { NavMainModel } from "@/models/user/nav-main-model"
 
 
 
@@ -28,7 +27,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const { userData } = useAuth();
   const [userDataCache, setUserDataCache] = useState<UserModel | undefined>(userData);
-  // const [activeMenuItem, setActiveMenuItem] = useState<NavMainType>(userData.navMain[0]);
+  // const [activeMenuItem, setActiveMenuItem] = useState<NavMainModel>(userData.navMain[0]);
   
   useEffect(() => {
 
@@ -39,11 +38,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   },[userDataCache]);
 
-  const handleSetActiveMenuItem = (menuItem: NavMainType) => {
+  const handleSetActiveMenuItem = (menuItem: NavMainModel) => {
     setUserDataCache((prev) => {
       if (!prev) return prev; // mantém o tipo UserModel | undefined
 
-      const updateList = (list?: NavMainType[]): NavMainType[] | undefined => {
+      const updateList = (list?: NavMainModel[]): NavMainModel[] | undefined => {
         if (!list) return list;
         return list.map((item) => ({
           ...item,
@@ -64,11 +63,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props} >
       <SidebarHeader className="bg-gray-100">
-        <VersionSwitcher
-          //versions={undefined}
-          //defaultVersion={userData.versions[0]}
-        />
-        <SearchForm />
+        <VersionSwitcher />
       </SidebarHeader>
       <SidebarContent className="bg-gray-100">
         {/* We create a SidebarGroup for each parent. */}

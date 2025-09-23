@@ -1,0 +1,17 @@
+model  Trigger {
+
+    id                      String          @id                 @default(uuid())
+    createdAt               DateTime                            @default(now())
+    updatedAt               DateTime                            @updatedAt
+    active                  Boolean                             @default(true)
+
+    phrase                  String
+    authorId                String
+    proposerId              String
+    duration                Int                                 @default(0)
+
+    author                  User                                @relation("AuthorTriggers", fields: [authorId], references: [id])
+    proposer                User                                @relation("ProposerTriggers", fields: [proposerId], references: [id])
+
+    votes       TriggerVote[]
+}   

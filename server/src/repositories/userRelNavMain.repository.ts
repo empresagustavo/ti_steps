@@ -17,6 +17,13 @@ const findById = async (id: string): Promise<UserRelNavMain | null> => {
     });
 };
 
+const findByRelId = async (userId: string, navMainId: string): Promise<UserRelNavMain | null> => {
+
+    return await context.userRelNavMain.findFirst({ 
+        where: { userId, navMainId },
+    });
+};
+
 const create = async (data: Prisma.UserRelNavMainCreateInput): Promise<UserRelNavMain> => {
 
     return await context.userRelNavMain.create({ 
@@ -39,10 +46,10 @@ const remove = async (id: string): Promise<UserRelNavMain> => {
     });
 };
 
-
 export default { 
     findAll, 
-    findById, 
+    findById,
+    findByRelId,
     create, 
     update, 
     remove

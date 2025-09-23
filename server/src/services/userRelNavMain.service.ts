@@ -41,6 +41,15 @@ const remove = async (id: string): Promise<boolean> => {
     return rel === undefined;
 }
 
+const removeByRel = async (userId: string, navMainId: string): Promise<boolean> => {
+
+    const userNav = await userRelNavMainRepository.findByRelId(userId, navMainId);
+    if(!userNav ) throw new Error("Nenhum recurso encontrado.");
+
+    let rel = await userRelNavMainRepository.remove(userNav.id);
+    return rel === undefined;
+}
+
 const toModel = (entity: UserRelNavMain): UserRelNavMainModel => {
     
     return {
@@ -87,4 +96,5 @@ export default {
     create,
     update,
     remove,
+    removeByRel,
 };

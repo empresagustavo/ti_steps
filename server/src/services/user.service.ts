@@ -4,6 +4,8 @@ import userRepository, { UserWithNavMains } from "../repositories/user.repositor
 import { hashPassword } from "../utils/crypt.util";
 import { BadRequestError, NotFoundError } from "../errors/http.error";
 import { randomUUID } from "crypto";
+import { UserRelNavMainModel } from "../models/userRelNavMain.model";
+import userRelNavMainService from "./userRelNavMain.service";
 
 
 const getByEmail = async (email: string): Promise<UserModel> => {
@@ -32,6 +34,7 @@ const getById = async (id: string): Promise<UserModel> => {
 const create = async (model: UserModel) => {
     
     if(!model.password || !model.email) throw new Error("Um ou mais parâmetros inválidos.");
+    if(await userRepository.findByEmail(model.email)) throw new BadRequestError("Email já existe cadastrado.");
 
     model.password = await hashPassword(model.password);
 
@@ -59,6 +62,20 @@ const remove = async (id: string): Promise<boolean> => {
 
     let user = await userRepository.remove(id);
     return user === undefined;
+}
+
+const createNavMainAccess = async (userId: string, navMainId: string): Promise<UserRelNavMainModel> => {
+
+    if (!userId || !navMainId) throw new BadRequestError("Parâmetros inválidos!"); 
+
+    return await userRelNavMainService.create({ userId, navMainId, });
+}
+
+const removeNavMainAccess = async (userId: string, navMainId: string): Promise<boolean> => {
+
+    if (!userId || !navMainId) throw new BadRequestError("Parâmetros inválidos!"); 
+
+    return await userRelNavMainService.removeByRel(userId, navMainId);
 }
 
 const toModel = (entity: User): UserModel => {
@@ -128,4 +145,6 @@ export default {
     create,
     update,
     remove,
+    createNavMainAccess,
+    removeNavMainAccess,
 };

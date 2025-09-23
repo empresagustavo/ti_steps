@@ -10,4 +10,7 @@ model User {
     isAdmin                 Boolean                             @default(false)
 
     userRelNavMain          UserRelNavMain[]
+    authoredTriggers        Trigger[]                           @relation("AuthorTriggers")
+    proposedTriggers        Trigger[]                           @relation("ProposerTriggers")
+    votes       TriggerVote[]
 }

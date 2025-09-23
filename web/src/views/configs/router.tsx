@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RouterPathType } from "../../utils/types/router-path-type";
 import { AuthProvider } from "@/hooks/auth/use-auth";
+import { PrivateRoute } from "@/components/auth/privateRoute";
 
 
 export function Router() {
@@ -16,8 +17,10 @@ export function Router() {
                         <Route path={ RouterPathType.USER.path } element={ <RouterPathType.USER.page/> }/>
                         <Route path={ RouterPathType.TRIGGER.path } element={ <RouterPathType.TRIGGER.page/> }/>
                         <Route path={ RouterPathType.TRIGGER_REGISTER.path } element={ <RouterPathType.TRIGGER_REGISTER.page/> }/>
-                        <Route path={ RouterPathType.USER_MANAGEMENT.path } element={ <RouterPathType.USER_MANAGEMENT.page/> }/>
+                        <Route path={ RouterPathType.USER_MANAGERS.path } element={ <PrivateRoute requireAdmin={true}><RouterPathType.USER_MANAGERS.page/></PrivateRoute>  }/>
                     </Route>
+
+                    <Route path={ RouterPathType.UNAUTHORIZED.path } element={ <RouterPathType.UNAUTHORIZED.page/> }/>
                 </Routes>
             </AuthProvider>
         </BrowserRouter>

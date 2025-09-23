@@ -1,4 +1,4 @@
-import type { NavMainType } from "./nav-main-model";
+import type { NavMainModel } from "./nav-main-model";
 
 
 export type UserModel = Omit<
@@ -7,10 +7,12 @@ export type UserModel = Omit<
 >
 
 export type UserAuthModel = {
+
+    id: string;
     token: string;
     name: string;
     isAdmin: boolean;
     email: string;
     avatar: string;
-    navMain?: NavMainType[];
+    navMain?: NavMainModel[];
 };

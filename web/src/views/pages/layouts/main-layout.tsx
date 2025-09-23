@@ -1,4 +1,3 @@
-import { ChartRadarLabelCustom } from "@/components/charts/chart-bar-interactive"
 import { AppSidebar } from "@/components/dashboard/app-sidebar"
 import {
   Breadcrumb,
@@ -8,7 +7,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
@@ -32,33 +30,21 @@ export function MainLayout() {
             <BreadcrumbList>
               <BreadcrumbItem className="hidden text-gray-700 md:block hover:underline">
                 <BreadcrumbLink href="#">
-                  Building Your Application
+                  Em construção
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden text-gray-700 md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                <BreadcrumbPage>Em construção</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-          
 
           {/* Aqui as pages filhas das rotas serão renderizadas */}
           <Outlet/>
-
-          {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 aspect-video rounded-xl" >
-              <ChartRadarLabelCustom/>
-            </div>
-            <div className="bg-muted/50 aspect-video rounded-xl" >
-              <ChartRadarLabelCustom/>
-            </div>
-            <div className="bg-muted/50 aspect-video rounded-xl" >
-              <ChartRadarLabelCustom/>
-            </div>
-          </div> */}
+          
           <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
         </div>
       </SidebarInset>

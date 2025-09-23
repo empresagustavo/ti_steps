@@ -1,34 +1,98 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useCreateTrigger, useFindAllTrigger, useUpdateTrigger } from "@/hooks/trigger/trigger.hook"
+import type { TriggerModel } from "@/models/trigger/trigger.model"
+import { toast } from "sonner"
+import type { UserModel } from "@/models/user/user-model"
+import { useFindAll } from "@/hooks/user/use-user"
+import { useAuth } from "@/hooks/auth/use-auth"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type TriggerForm = {
   phrase: string
-  author: string
-  proposer: string
-  duration: number // em minutos
-}
-
-type Trigger = {
-  id: number
-  phrase: string
-  author: string
-  proposer: string
+  authorId: string
   duration: number
 }
 
 export default function TriggerRegisterPage() {
+  const { userData } = useAuth()
+
   const [form, setForm] = useState<TriggerForm>({
     phrase: "",
-    author: "",
-    proposer: "",
+    authorId: "",
     duration: 30,
   })
-  const [triggers, setTriggers] = useState<Trigger[]>([])
+  const [triggers, setTriggers] = useState<TriggerModel[]>([])
+  const [users, setUsers] = useState<UserModel[]>([])
+
+  const { mutate: findAllUsers } = useFindAll(
+    (data) => setUsers(data),
+    (error) => {
+      console.log(error)
+      toast.error(error.response?.data?.message || `Erro ao carregar usuários.`, {
+        className: "text-red-500 font-semibold"
+      })
+    }
+  )
+
+  const { mutate: findAllTriggers } = useFindAllTrigger(
+    (data) => {
+      setTriggers(data)
+    },
+    (error) => {
+      console.log(error)
+      toast.error(error.response?.data?.message || `Erro ao carregar gatilhos.`, {
+        className: "text-red-500 font-semibold"
+      })
+    }
+  )
+
+  const { mutate: createTrigger } = useCreateTrigger(
+    () => {
+      toast.success(`Trigger registrado com sucesso!`)
+      handleFindAllTriggers()
+    },
+    (error) => {
+      console.log(error)
+      toast.error(error.response?.data?.message || `Erro ao registrar Trigger.`, {
+        className: "text-red-500 font-semibold"
+      })
+    }
+  )
+
+  const { mutate: updateTrigger } = useUpdateTrigger(
+    () => {
+      toast.success(`Trigger removido com sucesso!`)
+      handleFindAllTriggers()
+    },
+    (error) => {
+      console.log(error)
+      toast.error(error.response?.data?.message || `Erro ao remover Trigger.`, {
+        className: "text-red-500 font-semibold"
+      })
+    }
+  )
+
+  // Buscar usuários e triggers do dia
+  useEffect(() => {
+    findAllUsers({})
+    handleFindAllTriggers()
+  }, [])
+
+  const handleFindAllTriggers = () => {
+    const today = new Date()
+    const startDate = new Date(today)
+    startDate.setHours(0, 0, 0, 0)
+    const endDate = new Date(today)
+    endDate.setHours(23, 59, 59, 999)
+
+    findAllTriggers({ startDate, endDate })
+  }
 
   const handleChange = (field: keyof TriggerForm, value: string | number) => {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -36,18 +100,22 @@ export default function TriggerRegisterPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!form.phrase.trim() || !form.author.trim() || !form.proposer.trim()) return
+    if (!form.phrase.trim() || !form.authorId.trim()) return
 
-    const newTrigger: Trigger = {
-      id: triggers.length + 1,
-      phrase: form.phrase,
-      author: form.author,
-      proposer: form.proposer,
+    createTrigger({
       duration: form.duration,
-    }
+      phrase: form.phrase,
+      authorId: form.authorId,
+      proposerId: userData?.id!,
+    })
 
-    setTriggers((prev) => [...prev, newTrigger])
-    setForm({ phrase: "", author: "", proposer: "", duration: 30 })
+    setForm({ phrase: "", authorId: "", duration: 30 })
+  }
+
+  const isClosed = (createdAt: string | Date, duration: number) => {
+    const start = new Date(createdAt)
+    const end = new Date(start.getTime() + duration * 60000)
+    return new Date() > end
   }
 
   return (
@@ -72,20 +140,28 @@ export default function TriggerRegisterPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="author">Autor</Label>
-                <Input
-                  id="author"
-                  placeholder="Ex: Ana"
-                  value={form.author}
-                  onChange={(e) => handleChange("author", e.target.value)}
-                />
+                <Select
+                  value={form.authorId}
+                  onValueChange={(value) => handleChange("authorId", value)}
+                >
+                  <SelectTrigger id="author" className=" w-full">
+                    <SelectValue placeholder="Selecione um autor" />
+                  </SelectTrigger>
+                  <SelectContent >
+                    {users.map((u) => (
+                      <SelectItem key={u.id} value={u.id}>
+                        {u.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="proposer">Proposto por</Label>
                 <Input
                   id="proposer"
-                  placeholder="Ex: Carlos"
-                  value={form.proposer}
-                  onChange={(e) => handleChange("proposer", e.target.value)}
+                  value={userData?.name || ""}
+                  disabled
                 />
               </div>
             </div>
@@ -101,7 +177,9 @@ export default function TriggerRegisterPage() {
               />
             </div>
 
-            <Button type="submit" variant="ghost" className="w-full text-white bg-[#4f52ff]">Registrar</Button>
+            <Button type="submit" variant="ghost" className="w-full text-white bg-[#4f52ff]">
+              Registrar
+            </Button>
           </form>
         </CardContent>
       </Card>
@@ -115,25 +193,42 @@ export default function TriggerRegisterPage() {
           <ScrollArea className="h-[400px] pr-4">
             {triggers.length === 0 ? (
               <p className="text-muted-foreground text-sm">
-                Nenhum gatilho registrado ainda.
+                Nenhuma Trigger registrada hoje.
               </p>
             ) : (
               <div className="space-y-3">
-                {triggers.map((t) => (
-                  <div
-                    key={t.id}
-                    className="border rounded-xl p-3 shadow-sm flex flex-col gap-1"
-                  >
-                    <p className="font-medium">“{t.phrase}”</p>
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>Autor: {t.author}</span>
-                      <span>Proposto por: {t.proposer}</span>
+                {triggers.map((t) => {
+                  const closed = isClosed(t.createdAt!, t.duration!)
+                  return (
+                    <div
+                      key={t.id}
+                      className="border rounded-xl p-3 shadow-sm flex flex-col gap-2"
+                    >
+                      <p className="font-medium">“{t.phrase}”</p>
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>Autor: {t.author?.name}</span>
+                        <span>Proposto por: {t.proposer?.name}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className={`text-xs font-semibold ${closed ? "text-red-500" : "text-green-500"}`}>
+                          {closed ? "Fechada" : "Aberta"}
+                        </span>
+                        {userData?.id === t.proposer?.id && (
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => updateTrigger({ id: t.id! })}
+                          >
+                            Excluir
+                          </Button>
+                        )}
+                      </div>
+                      <span className="text-xs text-blue-500">
+                        Duração: {t.duration} min
+                      </span>
                     </div>
-                    <span className="text-xs text-blue-500">
-                      Duração: {t.duration} min
-                    </span>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </ScrollArea>

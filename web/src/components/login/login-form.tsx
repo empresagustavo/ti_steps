@@ -8,8 +8,9 @@ import createImg from "@/assets/11668754_20945760.jpg";
 import { useAuth } from "@/hooks/auth/use-auth"
 import { useState } from "react"
 import React from "react"
-import { useCreate, useLogin } from "@/hooks/auth/use-login"
+import { useLogin } from "@/hooks/auth/use-login"
 import { toast } from "sonner";
+import { useCreate } from "@/hooks/user/use-user"
 
 
 export function LoginForm({

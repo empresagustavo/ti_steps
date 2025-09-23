@@ -4,42 +4,67 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { useAuth } from "@/hooks/auth/use-auth"
 import { toast } from "sonner"
+import { useCreateNavAccess, useFindAll, useRemoveNavAccess } from "@/hooks/user/use-user"
+import type { UserModel } from "@/models/user/user-model"
+import type { NavMainModel } from "@/models/user/nav-main-model"
+import { X } from "lucide-react"
 
-// Tipos de dados
-interface NavMain {
-  id: string
-  title: string
-  url: string
-  parentId: string | null
-  items?: NavMain[]
-}
-
-interface User {
-  id: string
-  name: string
-  email: string
-  navMain: NavMain[]
-}
 
 export default function UserManagement() {
-  const { isAdmin } = useAuth()
-  if (!isAdmin) {
-    toast.warning("Você não tem permissão para acessar essa página!")
-    return
-  }
 
-  const [users, setUsers] = useState<User[]>([])
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [menus, setMenus] = useState<NavMain[]>([])
+  const [users, setUsers] = useState<UserModel[]>([])
+  const [selectedUser, setSelectedUser] = useState<UserModel | null>(null)
+  const [menus, setMenus] = useState<NavMainModel[]>([])
   const [selectedMenuToAdd, setSelectedMenuToAdd] = useState<string>("")
 
-  // Buscar usuários
+
+  const { mutate: findAllUsers } = useFindAll(
+  (data) => {
+    
+    setUsers(data);
+
+    if(!selectedUser) return;
+    const user = data.find(user => user.id === selectedUser.id);
+    
+    if(!user) return;
+
+    setSelectedUser(user);
+  },
+  (error) => {
+    console.log(error)
+    toast.error(error.response?.data?.message || `Erro ao carregar usuários.`, {
+      className: "text-red-500 font-semibold"
+    });
+  },);
+
+  const { mutate: createNavAccess } = useCreateNavAccess(
+  () => {
+    toast.success(`Acesso(s) liberado(s) para ${selectedUser?.name}`);
+    findAllUsers({})
+  },
+  (error) => {
+    console.log(error)
+    toast.error(error.response?.data?.message || `Erro ao liberar acesso.`, {
+      className: "text-red-500 font-semibold"
+    });
+  },);
+
+  const { mutate: removeNavAccess } = useRemoveNavAccess(
+  () => {
+    toast.success(`Acesso(s) removido(s) de ${selectedUser?.name}`);
+    findAllUsers({})
+  },
+  (error) => {
+    console.log(error)
+    toast.error(error.response?.data?.message || `Erro ao remover acesso.`, {
+      className: "text-red-500 font-semibold"
+    });
+  },);
+
+    // Buscar usuários
   useEffect(() => {
-    fetch("http://localhost:3000/api/users")
-      .then((res) => res.json())
-      .then(setUsers)
+    findAllUsers({});
   }, [])
 
   // Buscar menus
@@ -49,7 +74,7 @@ export default function UserManagement() {
       .then(setMenus)
   }, [])
 
-  const handleSelectUser = (user: User) => {
+  const handleSelectUser = (user: UserModel) => {
     console.log(user)
     setSelectedUser(user)
     setSelectedMenuToAdd("")
@@ -61,39 +86,17 @@ export default function UserManagement() {
     const menu = menus.find((m) => m.id === selectedMenuToAdd)
     if (!menu) return
 
-    const updatedUser = {
-      ...selectedUser,
-      navMain: [...selectedUser.navMain, menu],
-    }
-
-    setSelectedUser(updatedUser)
     setSelectedMenuToAdd("")
+    createNavAccess({ navMainId: menu.id, userId: selectedUser.id });
   }
 
   const handleRemoveMenu = (menuId: string) => {
+
     if (!selectedUser) return
 
-    const updatedUser = {
-      ...selectedUser,
-      navMain: selectedUser.navMain.filter((m) => m.id !== menuId),
-    }
-
-    setSelectedUser(updatedUser)
+    removeNavAccess({navMainId: menuId, userId: selectedUser.id});
   }
 
-  const handleSave = async () => {
-    if (!selectedUser) return
-
-    await fetch(`http://localhost:3000/api/users/${selectedUser.id}/menus`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        navMainIds: selectedUser.navMain.map((m) => m.id),
-      }),
-    })
-
-    toast.success("Menus atualizados com sucesso!")
-  }
 
   return (
     <div className="p-6 grid grid-cols-2 gap-6">
@@ -132,20 +135,26 @@ export default function UserManagement() {
       {selectedUser && (
         <Card>
           <CardHeader>
-            <CardTitle>Menus de {selectedUser.name}</CardTitle>
+            <CardTitle>
+              Menus liberados - <span className="text-blue-700">{selectedUser.name}</span>
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Menus atuais */}
             <div className="flex flex-wrap gap-2">
-              {selectedUser.navMain.length > 0 ? (
-                selectedUser.navMain.map((menu) => (
+              {selectedUser?.navMain?.length! > 0 ? (
+                selectedUser?.navMain?.map((menu) => (
                   <Badge
                     key={menu.id}
                     variant="secondary"
-                    className="cursor-pointer"
-                    onClick={() => handleRemoveMenu(menu.id)}
                   >
-                    {menu.title} ✕
+                    {menu.title}
+                    <Badge 
+                      variant="secondary"
+                      className="cursor-pointer"
+                      onClick={() => handleRemoveMenu(menu.id)}>
+                        <X className="text-red-400 " />
+                      </Badge>
                   </Badge>
                 ))
               ) : (
@@ -168,7 +177,7 @@ export default function UserManagement() {
                   {menus
                     .filter(
                       (m) =>
-                        !selectedUser.navMain.some(
+                        !selectedUser?.navMain?.some(
                           (userMenu) => userMenu.id === m.id
                         )
                     )
@@ -179,12 +188,7 @@ export default function UserManagement() {
                     ))}
                 </SelectContent>
               </Select>
-              <Button onClick={handleAddMenu}>Adicionar</Button>
-            </div>
-
-            {/* Salvar alterações */}
-            <div className="flex justify-end">
-              <Button onClick={handleSave}>Salvar</Button>
+              <Button className="cursor-pointer" onClick={handleAddMenu}>Adicionar</Button>
             </div>
           </CardContent>
         </Card>

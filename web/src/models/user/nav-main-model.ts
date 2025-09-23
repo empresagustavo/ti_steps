@@ -1,6 +1,7 @@
-export type NavMainType = {
+export type NavMainModel = {
+    id: string;
     title: string;
     url: string;
     isActive: boolean;
-    items?: NavMainType[];
+    items?: NavMainModel[];
 };
