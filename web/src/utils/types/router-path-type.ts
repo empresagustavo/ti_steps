@@ -6,6 +6,7 @@ import TriggerPage from "@/views/pages/trigger";
 import TriggerRegisterPage from "@/views/pages/trigger/register";
 import UserManagement from "@/views/pages/managers/user.manager";
 import Unauthorized from "@/views/pages/defaults/unauthorized.default";
+import { MemoriesPage } from "@/views/pages/memories";
 
 export type RouteConfigType = {
     path: string;
@@ -18,6 +19,7 @@ export const RouterPathType = {
     USER_MANAGERS: { path: "managers/users", page: UserManagement },
     USER: { path: "/user", page: UserPage },
     TRIGGER: { path: "/trigger/ranking", page: TriggerPage },
+    MEMORIES: { path: "/memories/album", page: MemoriesPage },
     TRIGGER_REGISTER: { path: "/trigger/register", page: TriggerRegisterPage },
     UNAUTHORIZED: { path: "/unauthorized", page: Unauthorized }
 } as const satisfies Record<string, RouteConfigType>;

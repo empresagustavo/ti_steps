@@ -30,7 +30,12 @@ const create = async (model: TriggerModel): Promise<TriggerModel> => {
 
 const update = async (id: string, model: TriggerModel): Promise<TriggerModel> => {
     
-    if(!await triggerRepository.findById(id)) throw new Error("Nenhum recurso encontrado.");
+    const trigger = await triggerRepository.findById(id);
+    if(!trigger) throw new Error("Nenhum recurso encontrado.");
+
+    const triggerEndTime = new Date(trigger.createdAt.getTime() + trigger.duration * 60_000)
+    const now = new Date();
+    if(now > triggerEndTime) throw new BadRequestError("Votação encerrada!");
     
     let rel = await triggerRepository.update(id, toEntity(model, false) as unknown as Prisma.TriggerUpdateInput);
 

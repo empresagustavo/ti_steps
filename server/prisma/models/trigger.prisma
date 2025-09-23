@@ -13,5 +13,5 @@ model  Trigger {
     author                  User                                @relation("AuthorTriggers", fields: [authorId], references: [id])
     proposer                User                                @relation("ProposerTriggers", fields: [proposerId], references: [id])
 
-    votes       TriggerVote[]
+    votes                   TriggerVote[]
 }   

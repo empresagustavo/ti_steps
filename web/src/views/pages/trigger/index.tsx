@@ -7,6 +7,7 @@ import type { TriggerModel } from "@/models/trigger/trigger.model"
 import { useFindAllTrigger, useVoteTrigger } from "@/hooks/trigger/trigger.hook"
 import { useAuth } from "@/hooks/auth/use-auth"
 import { toast } from "sonner"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 type UserRanking = {
   id: string
@@ -208,57 +209,59 @@ export default function TriggerPage() {
           <CardTitle>Votações de Gatilhos</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {triggers.length > 0 ? 
-            triggers.map((trigger) => (
-              <div
-                key={trigger.id}
-                className={`border rounded-xl p-4 flex flex-col gap-2 shadow-sm ${
-                  trigger.isOpen ? "" : "bg-gray-100"
-                }`}
-              >
-                <p className="font-medium">“{trigger.phrase}”</p>
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <span>Autor: {trigger.author?.name}</span>
-                  <span>Proposto por: {trigger.proposer?.name}</span>
-                </div>
+          <ScrollArea className="h-100 min-h-[480px]">
+            {triggers.length > 0 ? 
+              triggers.map((trigger) => (
+                <div
+                  key={trigger.id}
+                  className={`border mt-4 mb-4 rounded-xl p-4 flex flex-col gap-2 shadow-sm ${
+                    trigger.isOpen ? "" : "bg-gray-100"
+                  }`}
+                >
+                  <p className="font-medium">“{trigger.phrase}”</p>
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <span>Autor: {trigger.author?.name}</span>
+                    <span>Proposto por: {trigger.proposer?.name}</span>
+                  </div>
 
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-muted-foreground" />
-                  {trigger.isOpen ? (
-                    <span>{formatTime(trigger.timeLeft)} restantes</span>
-                  ) : (
-                    <span className="text-red-500">Encerrado</span>
-                  )}
-                </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-muted-foreground" />
+                    {trigger.isOpen ? (
+                      <span>{formatTime(trigger.timeLeft)} restantes</span>
+                    ) : (
+                      <span className="text-red-500">Encerrado</span>
+                    )}
+                  </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="font-bold">
-                    A Favor: {trigger.positiveVotes ?? 0} | Contra: {trigger.negativeVotes ?? 0}
-                  </span>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant={trigger.hasVoted === "up" ? "default" : "outline"}
-                      onClick={() => handleVote(trigger.id!, "up")}
-                      disabled={!!trigger.hasVoted || !trigger.isOpen}
-                    >
-                      <ThumbsUp className="w-4 h-4 mr-1" /> A Favor
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={trigger.hasVoted === "down" ? "default" : "outline"}
-                      onClick={() => handleVote(trigger.id!, "down")}
-                      disabled={!!trigger.hasVoted || !trigger.isOpen}
-                    >
-                      <ThumbsDown className="w-4 h-4 mr-1" /> Contra
-                    </Button>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold">
+                      A Favor: {trigger.positiveVotes ?? 0} | Contra: {trigger.negativeVotes ?? 0}
+                    </span>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant={trigger.hasVoted === "up" ? "default" : "outline"}
+                        onClick={() => handleVote(trigger.id!, "up")}
+                        disabled={!!trigger.hasVoted || !trigger.isOpen}
+                      >
+                        <ThumbsUp className="w-4 h-4 mr-1" /> A Favor
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={trigger.hasVoted === "down" ? "default" : "outline"}
+                        onClick={() => handleVote(trigger.id!, "down")}
+                        disabled={!!trigger.hasVoted || !trigger.isOpen}
+                      >
+                        <ThumbsDown className="w-4 h-4 mr-1" /> Contra
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )) 
-            :
-            <span className="text-gray-400 text-sm">Nenhuma Trigger ainda lançada...</span>
-          }
+              )) 
+              :
+              <span className="text-gray-400 text-sm">Nenhuma Trigger ainda lançada...</span>
+            }
+          </ScrollArea>
         </CardContent>
       </Card>
 

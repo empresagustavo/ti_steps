@@ -166,7 +166,7 @@ export default function TriggerRegisterPage() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-2">
+            {/* <div className="flex flex-col gap-2">
               <Label htmlFor="duration">Duração (min)</Label>
               <Input
                 id="duration"
@@ -175,7 +175,7 @@ export default function TriggerRegisterPage() {
                 value={form.duration}
                 onChange={(e) => handleChange("duration", Number(e.target.value))}
               />
-            </div>
+            </div> */}
 
             <Button type="submit" variant="ghost" className="w-full text-white bg-[#4f52ff]">
               Registrar
@@ -213,7 +213,7 @@ export default function TriggerRegisterPage() {
                         <span className={`text-xs font-semibold ${closed ? "text-red-500" : "text-green-500"}`}>
                           {closed ? "Fechada" : "Aberta"}
                         </span>
-                        {userData?.id === t.proposer?.id && (
+                        {userData?.id === t.proposer?.id && !closed && (
                           <Button
                             size="sm"
                             variant="destructive"

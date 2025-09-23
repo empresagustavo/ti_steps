@@ -12,5 +12,6 @@ model User {
     userRelNavMain          UserRelNavMain[]
     authoredTriggers        Trigger[]                           @relation("AuthorTriggers")
     proposedTriggers        Trigger[]                           @relation("ProposerTriggers")
-    votes       TriggerVote[]
+    votes                   TriggerVote[]
+    notifications           Notification[]
 }

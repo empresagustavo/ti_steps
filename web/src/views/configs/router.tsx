@@ -17,6 +17,7 @@ export function Router() {
                         <Route path={ RouterPathType.USER.path } element={ <RouterPathType.USER.page/> }/>
                         <Route path={ RouterPathType.TRIGGER.path } element={ <RouterPathType.TRIGGER.page/> }/>
                         <Route path={ RouterPathType.TRIGGER_REGISTER.path } element={ <RouterPathType.TRIGGER_REGISTER.page/> }/>
+                        <Route path={ RouterPathType.MEMORIES.path } element={ <RouterPathType.MEMORIES.page/> }/>
                         <Route path={ RouterPathType.USER_MANAGERS.path } element={ <PrivateRoute requireAdmin={true}><RouterPathType.USER_MANAGERS.page/></PrivateRoute>  }/>
                     </Route>
 
