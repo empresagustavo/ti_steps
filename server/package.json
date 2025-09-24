@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "nodemon src/server.ts --watch",
     "add-migration": "yarn prisma migrate dev --name init",
+    "add-migration-prd": "yarn prisma migrate deploy",
     "build": "tsc",
-    "start": "yarn prisma generate && yarn add-migration && node dist/server.js"
+    "start": "yarn build && yarn prisma generate && yarn add-migration-prd && node dist/server.js"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
