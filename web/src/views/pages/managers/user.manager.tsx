@@ -9,6 +9,7 @@ import { useCreateNavAccess, useFindAll, useRemoveNavAccess } from "@/hooks/user
 import type { UserModel } from "@/models/user/user-model"
 import type { NavMainModel } from "@/models/user/nav-main-model"
 import { X } from "lucide-react"
+import { useFindAllNavs } from "@/hooks/nav/nav.hook"
 
 
 export default function UserManagement() {
@@ -62,17 +63,23 @@ export default function UserManagement() {
     });
   },);
 
-    // Buscar usuários
+  const { mutate: findAllNavs } = useFindAllNavs(
+  (data) => {
+    setMenus(data);
+  },
+  (error) => {
+    console.log(error)
+    toast.error(error.response?.data?.message || `Erro ao remover acesso.`, {
+      className: "text-red-500 font-semibold"
+    });
+  },);
+
+    // Buscar usuários/navs
   useEffect(() => {
     findAllUsers({});
+    findAllNavs({});
   }, [])
 
-  // Buscar menus
-  useEffect(() => {
-    fetch("http://localhost:3000/api/navs-main")
-      .then((res) => res.json())
-      .then(setMenus)
-  }, [])
 
   const handleSelectUser = (user: UserModel) => {
     console.log(user)
