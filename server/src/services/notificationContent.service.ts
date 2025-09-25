@@ -1,6 +1,5 @@
 import { Prisma, NotificationContent } from "@prisma/client";
 import { NotificationContentModel } from "../models/notificationContent.model";
-import { NotificationModel } from "../models/notification.model";
 import notificationContentRepository from "../repositories/notificationContent.repository";
 
 
