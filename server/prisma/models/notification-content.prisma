@@ -8,5 +8,5 @@ model NotificationContent {
     message                 String
 
 
-    notications             Notification[]
+    notifications           Notification[]
 }
