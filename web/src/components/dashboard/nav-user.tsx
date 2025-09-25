@@ -3,6 +3,7 @@
 import {
   ChevronsUpDown,
   LogOut,
+  MessageCircleIcon,
 } from "lucide-react"
 
 import {
@@ -25,20 +26,33 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useAuth } from "@/hooks/auth/use-auth"
+import type { NotificationModel } from "@/models/notification/notification.model"
+import { SideNofitication } from "./notification"
+import { Button } from "../ui/button"
+import { Badge } from "../ui/badge"
+import { useEffect, useState } from "react"
+import { BellIcon } from "../ui/bell"
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+interface NavUserProps {
+  name: string
+  email: string
+  avatar: string,
+  notifications: NotificationModel[],
+  setRead: (notificationId: string) => void,
+}
+
+export function NavUser({avatar, email, name, setRead, notifications }: NavUserProps) {
   
-    const { logout } = useAuth();
-    const { isMobile } = useSidebar()
+  const { logout } = useAuth();
+  const { isMobile } = useSidebar()
+  const [containsNotifyNotRead, setContainsNotifyNotRead] = useState<boolean>(false);
+  const [countNotifyNotRead, setCountNotifyNotRead] = useState<number>(0);
 
+  useEffect(() => {
+    const valNotRead = notifications.filter(notify => notify.read === false).length;
+    setCountNotifyNotRead(valNotRead)
+    setContainsNotifyNotRead(valNotRead > 0)
+  }, [notifications])
 
   return (
     <SidebarMenu>
@@ -50,13 +64,14 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">{user.name.toUpperCase().substring(1,0)}</AvatarFallback>
+                <AvatarImage src={avatar} alt={name} />
+                <AvatarFallback className="rounded-lg">{name.toUpperCase().substring(1,0)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-medium">{name}</span>
+                <span className="truncate text-xs">{email}</span>
               </div>
+              {containsNotifyNotRead && <BellIcon className="text-red-500 infinite"/>}
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -69,19 +84,33 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">{user.name.toUpperCase().substring(1, 0)}</AvatarFallback>
+                  <AvatarImage src={avatar} alt={name} />
+                  <AvatarFallback className="rounded-lg">{name.toUpperCase().substring(1, 0)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-medium">{name}</span>
+                  <span className="truncate text-xs">{email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuLabel className="p-0 m-0">
+              <SideNofitication notifications={notifications} hasNotificationToRead={containsNotifyNotRead} setRead={setRead}>
+                <Button variant="ghost" className="w-full justify-start text-[13px]">
+                  <MessageCircleIcon /> 
+                  Notificações 
+                  {containsNotifyNotRead && 
+                    <Badge className="bg-red-500">
+                      {countNotifyNotRead}
+                    </Badge>
+                  }
+                </Button>
+              </SideNofitication>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={logout}>
-              <LogOut />
-              Log out
+              <LogOut className="text-red-500"/>
+              Sair
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

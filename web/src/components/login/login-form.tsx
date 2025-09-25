@@ -29,7 +29,6 @@ export function LoginForm({
     login(data);
   },
   (error) => {
-    console.log(error)
     toast.error(error.response?.data?.message || `Erro ao logar.`, {
       className: "text-red-500 font-semibold"
     });
@@ -41,7 +40,6 @@ export function LoginForm({
     login(data);
   },
   (error) => {
-    console.log(error)
     toast.error(error.response?.data?.message || `Erro ao cadastrar.`, {
       className: "text-red-500 font-semibold"
     });

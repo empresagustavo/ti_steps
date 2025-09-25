@@ -1,10 +1,14 @@
 import { Request, Response } from "express";
-import navMainService from "../services/navMain.service";
-import { NavMainModel } from "../models/navMain.model";
+import notificationService from "../services/notification.service";
+import { NotificationModel } from "../models/notification.model";
+
+
 
 const getAll = async (req: Request, res: Response) => {
 
-  const navs = await navMainService.getAll();
+  const { userId } = req.query;
+
+  const navs = await notificationService.getAll(userId as string);
 
   res.json(navs);
 };
@@ -13,26 +17,26 @@ const getById = async (req: Request, res: Response) => {
 
   const { id } = req.params;
 
-  const nav = await navMainService.getById(id);
+  const nav = await notificationService.getById(id);
   
   res.json(nav);
 };
 
 const create = async (req: Request, res: Response) => {
 
-    const { title, url, items } = req.body as NavMainModel;
+    const { userId, contentId } = req.body as NotificationModel;
 
-    const newNav = await navMainService.create({ title, url, items });
+    const newNav = await notificationService.create({ userId, contentId });
 
     res.status(201).json(newNav);
 };
 
 const update = async (req: Request, res: Response) => {
 
-  const { title, url, } = req.body as NavMainModel;
+  const { read, } = req.body as NotificationModel;
   const { id } = req.params;
 
-  const nav = await navMainService.update(id, { title, url, });
+  const nav = await notificationService.update(id, { read });
 
   res.json(nav);
 };
@@ -41,7 +45,7 @@ const remove = async (req: Request, res: Response) => {
 
   const { id } = req.params;
 
-  const nav = await navMainService.remove(id);
+  const nav = await notificationService.remove(id);
   
   res.json(nav);
 };

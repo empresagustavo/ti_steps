@@ -39,7 +39,7 @@ const update = async (req: Request, res: Response) => {
 
   const newUser = await userService.update(id, { email, name, password });
 
-  res.status(201).json(newUser);
+  res.json(newUser);
 };
 
 const remove = async (req: Request, res: Response) => {

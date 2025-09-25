@@ -12,7 +12,6 @@ const login = async (req: Request, res: Response) => {
     const { email, password } = req.body as AuthModel;
 
     const user = await authService.authentication({ email, password });
-    if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
     
     res.json(user);
 };

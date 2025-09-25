@@ -1,6 +1,6 @@
-import { Prisma, Notification } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import notificationRepository, { NotificationWithContent } from "../repositories/notification.repository";
 import { NotificationModel } from "../models/notification.model";
-import notificationRepository from "../repositories/notification.repository";
 
 const getAll = async (userId: string): Promise<NotificationModel[]> => {
 
@@ -42,12 +42,18 @@ const remove = async (id: string): Promise<boolean> => {
 }
 
 
-const toModel = (entity: Notification): NotificationModel => {
+const toModel = (entity: NotificationWithContent): NotificationModel => {
     
     return {
-        title: entity.title,
+        content: {
+            message:entity.content.message,
+            title: entity.content.title,
+            active: entity.content.active,
+            createdAt: entity.content.createdAt,
+            id: entity.content.id,
+            updatedAt: entity.content.updatedAt, 
+        },
         read: entity.read,
-        message: entity.message,
         userId: entity.userId,
         active: entity.active,
         createdAt: entity.createdAt,
@@ -61,8 +67,7 @@ const toEntity = (model: NotificationModel, isCreate: boolean): Prisma.Notificat
     if(isCreate) {
         let entity:Prisma.NotificationCreateInput ={
             user: { connect: { id: model.userId } },
-            message: model.message,
-            title: model.title,
+            content: { connect: { id: model.contentId } }
         };
 
         return entity;

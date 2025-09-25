@@ -5,9 +5,9 @@ model Notification {
     active                  Boolean                             @default(true)
 
     read                    Boolean                             @default(false)
-    title                   String
-    message                 String
     userId                  String
+    contentId               String
 
     user                    User                                @relation(fields: [userId], references: [id])
+    content                 NotificationContent                 @relation(fields: [contentId], references: [id])
 }

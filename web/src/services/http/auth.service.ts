@@ -7,6 +7,5 @@ export async function login(data: { email: string, password: string }): Promise<
         "Content-type": "application/json", 
     }).post<UserAuthModel>("/auth", data);
 
-    console.log(res.data)
     return res.data;
 }

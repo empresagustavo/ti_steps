@@ -3,7 +3,6 @@ import userController from "../../controllers/user.controller";
 
 const userRoute = Router();
 
-// Rotas de Usuário
 userRoute.get("/users", userController.getAll);
 userRoute.get("/users/:id", userController.getById);
 userRoute.post("/users", userController.create);

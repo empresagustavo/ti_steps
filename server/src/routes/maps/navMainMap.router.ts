@@ -3,7 +3,6 @@ import navMainController from "../../controllers/navMain.controller";
 
 const navMainRoute = Router();
 
-// Rotas de Menus
 navMainRoute.get("/navs-main", navMainController.getAll);
 navMainRoute.get("/navs-main/:id", navMainController.getById);
 navMainRoute.post("/navs-main", navMainController.create);

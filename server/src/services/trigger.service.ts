@@ -4,6 +4,9 @@ import { TriggerModel } from "../models/trigger.model";
 import { TriggerVoteModel } from "../models/triggerVote.model";
 import { BadRequestError } from "../errors/http.error";
 import triggerVoteService from "./triggerVote.service";
+import userService from "./user.service";
+import notificationContentService from "./notificationContent.service";
+import notificationService from "./notification.service";
 
 
 const getAll = async (createdAtStart: Date, createdAtEnd: Date): Promise<TriggerModel[]> => {
@@ -25,6 +28,7 @@ const create = async (model: TriggerModel): Promise<TriggerModel> => {
     
     let rel = await triggerRepository.create(toEntity(model, true) as unknown as Prisma.TriggerCreateInput);
 
+    await sendNotifications(rel.author.id, rel.proposer.id);
     return toModel(rel);
 };
 
@@ -71,6 +75,32 @@ const vote = async (vote: TriggerVoteModel): Promise<TriggerVoteModel> => {
     return await triggerVoteService.create(vote);
 }
 
+const sendNotifications = async (authorId: string, proposerId: string): Promise<void> => {
+
+    const allUsers = await userService.getAll();
+
+    const authorNotifyContent = await notificationContentService.create({ 
+        title: "Trigaram você!",
+        message: `${allUsers.find(user=> user.id === proposerId)?.name} acredita que você provocou seu(s) colega(s) com uma frase. Verifique a votação para saber mais detalhes.`,
+    });
+
+    const notifyContent = await notificationContentService.create({ 
+        title: `Trigaram ${allUsers.find(user=> user.id === authorId)?.name}!`,
+        message: `${allUsers.find(user=> user.id === authorId)?.name} talvez provocou um ou mais colegas. Verifique a votação para saber mais detalhes.`,
+    });
+
+    allUsers.map(async user => {
+
+        if(user.id === authorId){
+            await notificationService.create({ contentId: authorNotifyContent.id, userId: user.id })
+            return;
+        }
+
+        if(user.id === proposerId) return;
+
+        await notificationService.create({ contentId: notifyContent.id, userId: user.id })
+    });
+}
 
 const toModel = (entity: TriggerWithVote): TriggerModel => {
     

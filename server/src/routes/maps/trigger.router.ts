@@ -3,7 +3,6 @@ import triggerController from "../../controllers/trigger.controller";
 
 const triggerRoute = Router();
 
-// Rotas de Menus
 triggerRoute.get("/triggers", triggerController.getAll);
 triggerRoute.get("/triggers/:id", triggerController.getById);
 triggerRoute.post("/triggers", triggerController.create);

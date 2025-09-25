@@ -1,0 +1,12 @@
+model NotificationContent {
+    id                      String          @id                 @default(uuid())
+    createdAt               DateTime                            @default(now())
+    updatedAt               DateTime                            @updatedAt
+    active                  Boolean                             @default(true)
+
+    title                   String
+    message                 String
+
+
+    notications             Notification[]
+}

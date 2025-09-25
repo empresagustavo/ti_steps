@@ -1,4 +1,4 @@
-import { NotificationContentModel } from "./notificationContent.model";
+import type { NotificationContentModel } from "./notificationContent.model";
 
 
 

@@ -9,7 +9,6 @@ export async function findAll({}): Promise<UserModel[]> {
         "Content-type": "application/json", 
     }).get<UserModel[]>("/users");
 
-    console.log(res.data)
     return res.data;
 }
 
@@ -21,7 +20,6 @@ export async function create(data: { email: string, password: string }): Promise
         "Content-type": "application/json", 
     }).post<UserAuthModel>("/users", newData);
 
-    console.log(res.data)
     return res.data;
 }
 
@@ -31,7 +29,6 @@ export async function createNavMainAccess({userId, navMainId}: UserRelNavMainMod
         "Content-type": "application/json", 
     }).post<UserRelNavMainModel>("/users/navs", { userId, navMainId });
 
-    console.log(res.data)
     return res.data;
 }
 
@@ -41,6 +38,5 @@ export async function removeNavMainAccess({userId, navMainId}: UserRelNavMainMod
         "Content-type": "application/json", 
     }).delete<boolean>(`/users/${userId}/navs/${navMainId}`);
 
-    console.log(res.data)
     return res.data;
 }

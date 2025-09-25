@@ -7,6 +7,5 @@ export async function getAllNavs(): Promise<NavMainModel[]> {
         "Content-type": "application/json", 
     }).get<NavMainModel[]>("/navs-main");
     
-    console.log(res.data)
     return res.data;
 }
