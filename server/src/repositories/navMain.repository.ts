@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, NavMain } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 export type NavMainWithChildren = Prisma.NavMainGetPayload<{
   include: { children: true },
