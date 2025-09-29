@@ -11,6 +11,11 @@ import img008 from "../assets/album/008.jpeg";
 import img009 from "../assets/album/009.jpeg";
 import img010 from "../assets/album/010.jpeg";
 import img011 from "../assets/album/011.jpeg";
+import img012 from "../assets/album/012.jpg";
+import img013 from "../assets/album/013.jpg";
+import img014 from "../assets/album/014.jpg";
+import img015 from "../assets/album/015.jpg";
+import img016 from "../assets/album/016.jpg";
 
 type ImageItem = string | { src: string; alt?: string };
 
@@ -86,6 +91,26 @@ const DEFAULT_IMAGES: ImageItem[] = [
   },
   {
     src: img011,
+    alt: 'Social media image'
+  },
+  {
+    src: img012,
+    alt: 'Social media image'
+  },
+  {
+    src: img013,
+    alt: 'Social media image'
+  },
+  {
+    src: img014,
+    alt: 'Social media image'
+  },
+  {
+    src: img015,
+    alt: 'Social media image'
+  },
+  {
+    src: img016,
     alt: 'Social media image'
   }
 ];
