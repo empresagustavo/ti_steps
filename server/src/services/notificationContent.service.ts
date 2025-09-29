@@ -1,6 +1,7 @@
 import { Prisma, NotificationContent } from "@prisma/client";
 import { NotificationContentModel } from "../models/notificationContent.model";
 import notificationContentRepository from "../repositories/notificationContent.repository";
+import { NotFoundError } from "../errors/http.error";
 
 
 
@@ -14,7 +15,7 @@ const getAll = async (): Promise<NotificationContentModel[]> => {
 const getById = async (id: string): Promise<NotificationContentModel> => {
 
     let rel = await notificationContentRepository.findById(id);
-    if(!rel) throw new Error("Nenhum recurso encontrado.");
+    if(!rel) throw new NotFoundError("Nenhum recurso encontrado.");
 
     return toModel(rel);;
 };
@@ -28,7 +29,7 @@ const create = async (model: NotificationContentModel): Promise<NotificationCont
 
 const update = async (id: string, model: NotificationContentModel): Promise<NotificationContentModel> => {
     
-    if(!await notificationContentRepository.findById(id)) throw new Error("Nenhum recurso encontrado.");
+    await getById(id);
     
     let rel = await notificationContentRepository.update(id, toEntity(model, false) as unknown as Prisma.NotificationContentUpdateInput);
 
@@ -37,7 +38,7 @@ const update = async (id: string, model: NotificationContentModel): Promise<Noti
 
 const remove = async (id: string): Promise<boolean> => {
 
-    if(!await notificationContentRepository.findById(id)) throw new Error("Nenhum recurso encontrado.");
+    await getById(id);
 
     let rel = await notificationContentRepository.remove(id);
     return rel === undefined;

@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { NavMainModel } from "../models/navMain.model";
 import navMainRepository, { NavMainWithChildren } from "../repositories/navMain.repository";
+import { NotFoundError } from "../errors/http.error";
 
 
 const getAll = async (): Promise<NavMainModel[]> => {
@@ -13,7 +14,7 @@ const getAll = async (): Promise<NavMainModel[]> => {
 const getById = async (id: string): Promise<NavMainModel> => {
 
     let nav = await navMainRepository.findById(id);
-    if(!nav) throw new Error("Nenhum recurso encontrado.");
+    if(!nav) throw new NotFoundError("Nenhum recurso encontrado.");
 
     return toModel(nav);;
 };
@@ -27,7 +28,7 @@ const create = async (model: NavMainModel) => {
 
 const update = async (id: string, model: NavMainModel): Promise<NavMainModel> => {
     
-    if(!await navMainRepository.findById(id)) throw new Error("Nenhum recurso encontrado.");
+    await getById(id);
     
     let nav = await navMainRepository.update(id, toEntity(model, false) as unknown as Prisma.NavMainUpdateInput);
 
@@ -36,7 +37,7 @@ const update = async (id: string, model: NavMainModel): Promise<NavMainModel> =>
 
 const remove = async (id: string): Promise<boolean> => {
 
-    if(!await navMainRepository.findById(id)) throw new Error("Nenhum recurso encontrado.");
+    await getById(id);
 
     let nav = await navMainRepository.remove(id);
     return nav === undefined;

@@ -1,6 +1,7 @@
 import { Prisma, UserRelNavMain } from "@prisma/client";
 import { UserRelNavMainModel } from "../models/userRelNavMain.model";
 import userRelNavMainRepository from "../repositories/userRelNavMain.repository";
+import { NotFoundError } from "../errors/http.error";
 
 const getAll = async (userId: string): Promise<UserRelNavMainModel[]> => {
 
@@ -12,7 +13,7 @@ const getAll = async (userId: string): Promise<UserRelNavMainModel[]> => {
 const getById = async (id: string): Promise<UserRelNavMainModel> => {
 
     let rel = await userRelNavMainRepository.findById(id);
-    if(!rel) throw new Error("Nenhum recurso encontrado.");
+    if(!rel) throw new NotFoundError("Nenhum recurso encontrado.");
 
     return toModel(rel);;
 };
@@ -26,7 +27,7 @@ const create = async (model: UserRelNavMainModel): Promise<UserRelNavMainModel> 
 
 const update = async (id: string, model: UserRelNavMainModel): Promise<UserRelNavMainModel> => {
     
-    if(!await userRelNavMainRepository.findById(id)) throw new Error("Nenhum recurso encontrado.");
+    await getById(id);
     
     let rel = await userRelNavMainRepository.update(id, toEntity(model, false) as unknown as Prisma.UserUpdateInput);
 
@@ -35,7 +36,7 @@ const update = async (id: string, model: UserRelNavMainModel): Promise<UserRelNa
 
 const remove = async (id: string): Promise<boolean> => {
 
-    if(!await userRelNavMainRepository.findById(id)) throw new Error("Nenhum recurso encontrado.");
+    await getById(id);
 
     let rel = await userRelNavMainRepository.remove(id);
     return rel === undefined;
@@ -44,7 +45,7 @@ const remove = async (id: string): Promise<boolean> => {
 const removeByRel = async (userId: string, navMainId: string): Promise<boolean> => {
 
     const userNav = await userRelNavMainRepository.findByRelId(userId, navMainId);
-    if(!userNav ) throw new Error("Nenhum recurso encontrado.");
+    if(!userNav ) throw new NotFoundError("Nenhum recurso encontrado.");
 
     let rel = await userRelNavMainRepository.remove(userNav.id);
     return rel === undefined;

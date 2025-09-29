@@ -33,7 +33,7 @@ const getById = async (id: string): Promise<UserModel> => {
 
 const create = async (model: UserModel) => {
     
-    if(!model.password || !model.email) throw new Error("Um ou mais parâmetros inválidos.");
+    if(!model.password || !model.email) throw new BadRequestError("Um ou mais parâmetros inválidos.");
     if(await userRepository.findByEmail(model.email)) throw new BadRequestError("Email já existe cadastrado.");
 
     model.password = await hashPassword(model.password);
@@ -45,7 +45,7 @@ const create = async (model: UserModel) => {
 
 const update = async (id: string, model: UserModel): Promise<UserModel> => {
     
-    if(!await userRepository.findById(id)) throw new NotFoundError("Nenhum recurso encontrado.");
+    await getById(id);
 
     if(!model.password || !model.email) throw new BadRequestError("Um ou mais parâmetros inválidos.");
 
@@ -58,7 +58,7 @@ const update = async (id: string, model: UserModel): Promise<UserModel> => {
 
 const remove = async (id: string): Promise<boolean> => {
 
-    if(!await userRepository.findById(id)) throw new NotFoundError("Nenhum recurso encontrado.");
+    await getById(id);
 
     let user = await userRepository.remove(id);
     return user === undefined;

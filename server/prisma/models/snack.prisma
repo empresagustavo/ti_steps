@@ -1,0 +1,20 @@
+model Snack {
+    id                      String          @id                 @default(uuid())
+    createdAt               DateTime                            @default(now())
+    updatedAt               DateTime                            @updatedAt
+    active                  Boolean                             @default(true)
+
+    description             String?
+    date                    DateTime
+    isPromised              Boolean
+    isPaid                  Boolean                             @default(false)
+    userId                  String
+    type                    SnackType
+
+    user                    User                                @relation(references: [id], fields: [userId])
+}
+
+enum SnackType {
+    BREAKFAST
+    AFTERNOON
+}

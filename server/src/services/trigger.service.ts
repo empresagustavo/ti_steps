@@ -2,7 +2,7 @@ import { Prisma, Trigger } from "@prisma/client";
 import triggerRepository, { TriggerWithVote } from "../repositories/trigger.repository";
 import { TriggerModel } from "../models/trigger.model";
 import { TriggerVoteModel } from "../models/triggerVote.model";
-import { BadRequestError } from "../errors/http.error";
+import { BadRequestError, NotFoundError } from "../errors/http.error";
 import triggerVoteService from "./triggerVote.service";
 import userService from "./user.service";
 import notificationContentService from "./notificationContent.service";
@@ -19,7 +19,7 @@ const getAll = async (createdAtStart: Date, createdAtEnd: Date): Promise<Trigger
 const getById = async (id: string): Promise<TriggerModel> => {
 
     let rel = await triggerRepository.findById(id);
-    if(!rel) throw new Error("Nenhum recurso encontrado.");
+    if(!rel) throw new NotFoundError("Nenhum recurso encontrado.");
 
     return toModel(rel);;
 };
@@ -34,10 +34,9 @@ const create = async (model: TriggerModel): Promise<TriggerModel> => {
 
 const update = async (id: string, model: TriggerModel): Promise<TriggerModel> => {
     
-    const trigger = await triggerRepository.findById(id);
-    if(!trigger) throw new Error("Nenhum recurso encontrado.");
+    const trigger = await getById(id);
 
-    const triggerEndTime = new Date(trigger.createdAt.getTime() + trigger.duration * 60_000)
+    const triggerEndTime = new Date(trigger.createdAt!.getTime() + trigger!.duration * 60_000)
     const now = new Date();
     if(now > triggerEndTime) throw new BadRequestError("Votação encerrada!");
     
@@ -48,7 +47,7 @@ const update = async (id: string, model: TriggerModel): Promise<TriggerModel> =>
 
 const remove = async (id: string): Promise<boolean> => {
 
-    if(!await triggerRepository.findById(id)) throw new Error("Nenhum recurso encontrado.");
+    await getById(id);
 
     let rel = await triggerRepository.remove(id);
     return rel === undefined;
@@ -56,8 +55,7 @@ const remove = async (id: string): Promise<boolean> => {
 
 const vote = async (vote: TriggerVoteModel): Promise<TriggerVoteModel> => {
 
-    const trigger = await triggerRepository.findById(vote.triggerId);
-    if(!trigger) throw new Error("Nenhum recurso encontrado.");
+    const trigger = await getById(vote.triggerId);
 
     let isVoted: boolean;
     try {
@@ -68,7 +66,7 @@ const vote = async (vote: TriggerVoteModel): Promise<TriggerVoteModel> => {
 
     if(isVoted) throw new BadRequestError("Usuário já votou!")
 
-    const triggerEndTime = new Date(trigger.createdAt.getTime() + trigger.duration * 60_000)
+    const triggerEndTime = new Date(trigger.createdAt!.getTime() + trigger.duration * 60_000)
     const now = new Date();
     if(now > triggerEndTime) throw new BadRequestError("Votação encerrada!");
 

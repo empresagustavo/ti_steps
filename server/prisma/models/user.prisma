@@ -14,4 +14,5 @@ model User {
     proposedTriggers        Trigger[]                           @relation("ProposerTriggers")
     votes                   TriggerVote[]
     notifications           Notification[]
+    snacks                  Snack[]
 }

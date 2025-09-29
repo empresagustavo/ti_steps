@@ -23,7 +23,7 @@ const findByUserId = async (userId: string, triggerId: string): Promise<TriggerV
     let vote = await triggerVoteRepository.findByUserId(userId, triggerId);
     if(!vote) throw new NotFoundError("Nenhum recurso encontrado.");
 
-    return toModel(vote);;
+    return toModel(vote);
 };
 
 const create = async (model: TriggerVoteModel): Promise<TriggerVoteModel> => {
@@ -35,7 +35,7 @@ const create = async (model: TriggerVoteModel): Promise<TriggerVoteModel> => {
 
 const update = async (id: string, model: TriggerVoteModel): Promise<TriggerVoteModel> => {
     
-    if(!await triggerVoteRepository.findById(id)) throw new NotFoundError("Nenhum recurso encontrado.");
+    await getById(id);
     
     let vote = await triggerVoteRepository.update(id, toEntity(model, false) as unknown as Prisma.TriggerVoteUpdateInput);
 
@@ -44,7 +44,7 @@ const update = async (id: string, model: TriggerVoteModel): Promise<TriggerVoteM
 
 const remove = async (id: string): Promise<boolean> => {
 
-    if(!await triggerVoteRepository.findById(id)) throw new NotFoundError("Nenhum recurso encontrado.");
+    await getById(id);
 
     let vote = await triggerVoteRepository.remove(id);
     return vote === undefined;
