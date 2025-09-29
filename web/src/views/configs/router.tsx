@@ -19,7 +19,7 @@ export function Router() {
                         <Route path={ RouterPathType.TRIGGER_REGISTER.path } element={ <RouterPathType.TRIGGER_REGISTER.page/> }/>
                         <Route path={ RouterPathType.MEMORIES.path } element={ <RouterPathType.MEMORIES.page/> }/>
                         <Route path={ RouterPathType.SNACK.path } element={ <RouterPathType.SNACK.page/> }/>
-                        <Route path={ RouterPathType.SNACK_REGISTER.path } element={ <RouterPathType.SNACK_REGISTER.page/> }/>
+                        <Route path={ RouterPathType.SNACK_REGISTER.path } element={ <PrivateRoute requireAdmin={true}><RouterPathType.SNACK_REGISTER.page/></PrivateRoute> }/>
                         <Route path={ RouterPathType.USER_MANAGERS.path } element={ <PrivateRoute requireAdmin={true}><RouterPathType.USER_MANAGERS.page/></PrivateRoute>  }/>
                     </Route>
 
