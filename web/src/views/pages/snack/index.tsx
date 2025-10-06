@@ -33,10 +33,9 @@ export default function SnackPage() {
 
 
     function reloadSnacks(){
-        const today = new Date();
-        const startDate = new Date(today);
+        const startDate = new Date(new Date().setDate(- 30));
         startDate.setHours(0, 0, 0, 0);
-        const endDate = new Date(today);
+        const endDate = new Date(new Date().setDate(60));
         endDate.setHours(23, 59, 59, 999);
 
         findAllStacks({ startDate: startDate, endDate: endDate });
@@ -46,7 +45,7 @@ export default function SnackPage() {
 
         const startDate = new Date(new Date().setDate(- 30));
         startDate.setHours(0, 0, 0, 0);
-        const endDate = new Date();
+        const endDate = new Date(new Date().setDate(60));
         endDate.setHours(23, 59, 59, 999);
 
         reloadSnacks();

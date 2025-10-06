@@ -146,7 +146,7 @@ export default function TriggerPage() {
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
     const s = seconds % 60
-    return `${m}m ${s}s`
+    return `${m}m ${s}s`;
   }
 
   const calculateRankings = (triggers: ExtendedTrigger[]) => {

@@ -92,7 +92,7 @@ const toModelStats = (entity: SnackWithUser[]): SnackStats => {
 
     const freeloaderRanking= Object.values(
         entity
-        .filter((s) => !s.isPaid && s.date.getDate() < Date.now())
+        .filter((s) => !s.isPaid && s.date < new Date())
         .reduce((acc, s) => {
             acc[s.userId] = acc[s.userId] || { user: s.user.name, count: 0 };
             acc[s.userId].count++;
